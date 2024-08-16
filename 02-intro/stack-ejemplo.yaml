@@ -1,0 +1,29 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  This stack will create
+  an instance and everything
+  necessary for it to work
+Resources:
+  Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: "ami-0ae8f15ae66fe8cda"
+      KeyName: "demo-keys"
+      InstanceType: "t2.micro"
+      SecurityGroupIds:
+        - Ref: SecurityGroupSSH
+  SecurityGroupSSH:
+     Type: AWS::EC2::SecurityGroup
+     Properties:
+       GroupDescription: "This is a security group for SSH"
+       SecurityGroupEgress: 
+         -   CidrIp: 0.0.0.0/0
+             FromPort: 22
+             IpProtocol: tcp
+             ToPort: 22
+       SecurityGroupIngress: 
+         -   CidrIp: 0.0.0.0/0
+             FromPort: 0 #Any port
+             IpProtocol: -1 #Any protocol
+             ToPort: 0
+       VpcId: "vpc-0054d7c1b2cf913fb"
