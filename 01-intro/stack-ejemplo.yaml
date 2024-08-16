@@ -1,0 +1,10 @@
+AWSTemplateFormatVersion: "2010-09-09"
+Description: >
+  This stack will create
+  an instance and everything
+  necessary for it to work
+Resources:
+  Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: "ami-0ae8f15ae66fe8cda"
