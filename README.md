@@ -1,1 +1,1 @@
-# IntroCloudFormation
+# IntroCloudFormation (.YAML)
