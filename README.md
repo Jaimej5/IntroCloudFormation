@@ -1,5 +1,6 @@
 # IntroCloudFormation (.YAML)
 
+
 ## CLI
 Para crear o actualizar stacks desde la línea de comandos con AWS CLI instalado, navega al directorio correspondiente y ejecuta los siguientes comandos: [DOCUMENTACION OFICIAL DE AMAZON]
 
@@ -14,3 +15,4 @@ Entre otras funciones intrínsecas en las que mayormente se juega con los output
 ```bash
 aws cloudformation deploy --stack-name prueba-functions --template-file functions.yaml --parameter-overrides KeyPairParameter=demo-keys AMIIdParameter=ami-0ae8f15ae66fe8cda VPCIdParameter=vpc-0054d7c1b2cf913fb
 ```
+
