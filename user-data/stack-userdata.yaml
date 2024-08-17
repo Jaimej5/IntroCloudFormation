@@ -1,0 +1,73 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: >
+  This stack will create
+  an instance and everything
+  necessary for it to work
+
+Parameters:
+  VPCIdParameter:
+    Type: String
+    #Default: vpc-0054d7c1b2cf913fb 
+  KeyPairParameter:
+    Type: String
+    #Default: demo-keys
+  AMIIdParameter:
+    Type: String
+    #Default: ami-0ae8f15ae66fe8cda
+  Environment:
+    Type: String
+    AllowedValues:
+      - prod
+      - staging
+  InstanceTypeParameter:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t3.micro
+      - t3.small
+
+Outputs:
+  InstanceId:
+    Value: 
+      Ref: Instance
+
+Resources:
+  Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: 
+        Ref: AMIIdParameter
+      KeyName: 
+        Ref: KeyPairParameter
+      InstanceType: 
+        Ref: InstanceTypeParameter
+      SecurityGroupIds:
+        - Ref: SecurityGroupSSH
+      UserData: IyEvYmluL2Jhc2gKCnN1ZG8gYXB0IHVwZGF0ZQpzdWRvIGFwdCBpbnN0YWxsIG5naW54IC15CgplY2hvICdob2xhIG11bmRvJyB8IHN1ZG8gdGVlIC91c3Ivc2hhcmUvbmdpbngvaHRtbC9pbmRleC5odG1s
+  SecurityGroupSSH:
+     Type: AWS::EC2::SecurityGroup
+     Properties:
+       GroupDescription: "This is a security group for SSH"
+       SecurityGroupEgress: 
+         -   CidrIp: 0.0.0.0/0
+             FromPort: 22
+             IpProtocol: tcp
+             ToPort: 22
+       SecurityGroupIngress: 
+         -   CidrIp: 1.2.3.4/32
+             FromPort: 0 #Any port
+             IpProtocol: -1 #Any protocol
+             ToPort: 0
+       VpcId: 
+          Ref: VPCIdParameter
+  SecurityGroupIngress:
+    Type: AWS::EC2::SecurityGroupIngress
+    Properties:
+      GroupId: !Ref SecurityGroupSSH
+      IpProtocol: tcp
+      FromPort: 80
+      ToPort: 80
+      CidrIp: 0.0.0.0/0
+      Description: Allow all traffic from prod environment
