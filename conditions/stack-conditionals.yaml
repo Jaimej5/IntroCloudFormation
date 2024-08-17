@@ -1,0 +1,93 @@
+AWSTemplateFormatVersion: '2010-09-09'
+
+Description: >
+  This stack will create
+  an instance and everything
+  necessary for it to work
+
+Conditions:
+  StagingEnvironment:
+    !Equals
+      - !Ref Environment
+      - staging
+  ProdEnvironment:
+    !Equals
+      - !Ref Environment
+      - prod
+
+Parameters:
+  VPCIdParameter:
+    Type: String
+    #Default: vpc-0054d7c1b2cf913fb 
+  KeyPairParameter:
+    Type: String
+    #Default: demo-keys
+  AMIIdParameter:
+    Type: String
+    #Default: ami-0ae8f15ae66fe8cda
+  Environment:
+    Type: String
+    AllowedValues:
+      - prod
+      - staging
+  InstanceTypeParameter:
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t3.micro
+      - t3.small
+
+Outputs:
+  InstanceId:
+    Value: 
+      Ref: Instance
+
+Resources:
+  Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: 
+        Ref: AMIIdParameter
+      KeyName: 
+        Ref: KeyPairParameter
+      InstanceType: 
+        Ref: InstanceTypeParameter
+      SecurityGroupIds:
+        - Ref: SecurityGroupSSH
+  SecurityGroupSSH:
+     Type: AWS::EC2::SecurityGroup
+     Properties:
+       GroupDescription: "This is a security group for SSH"
+       SecurityGroupEgress: 
+         -   CidrIp: 0.0.0.0/0
+             FromPort: 22
+             IpProtocol: tcp
+             ToPort: 22
+       SecurityGroupIngress: 
+         -   CidrIp: 1.2.3.4/32
+             FromPort: 0 #Any port
+             IpProtocol: -1 #Any protocol
+             ToPort: 0
+       VpcId: 
+          Ref: VPCIdParameter
+  SecurityGroupIngressStaging:
+    Type: AWS::EC2::SecurityGroupIngress
+    Condition: StagingEnvironment
+    Properties:
+      GroupId: !Ref SecurityGroupSSH
+      IpProtocol: -1
+      FromPort: -1
+      ToPort: -1
+      CidrIp: 1.2.3.4/32
+      Description: Allow all traffic from staging environment
+  SecurityGroupIngressProd:
+    Type: AWS::EC2::SecurityGroupIngress
+    Condition: ProdEnvironment
+    Properties:
+      GroupId: !Ref SecurityGroupSSH
+      IpProtocol: -1
+      FromPort: -1
+      ToPort: -1
+      CidrIp: 0.0.0.0/0
+      Description: Allow all traffic from prod environment
