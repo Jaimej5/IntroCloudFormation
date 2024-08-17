@@ -30,3 +30,16 @@ Delete
 aws cloudformation delete-stack --stack-name staging-conditionals
 aws cloudformation delete-stack --stack-name prod-conditionals
 ```
+
+## User Data
+Deploy
+```bash
+aws cloudformation deploy --stack-name staging-userdata --template-file stack-userdata.yaml --parameter-overrides AMIIdParameter=ami-04a81a99f5ec58529 KeyPairParameter=demo-keys VPCIdParameter=vpc-0054d7c1b2cf913fb Environment=staging
+aws cloudformation deploy --stack-name prod-userdata --template-file stack-userdata.yaml --parameter-overrides AMIIdParameter=ami-04a81a99f5ec58529gir KeyPairParameter=demo-keys VPCIdParameter=vpc-0054d7c1b2cf913fb Environment=prod
+```
+
+Delete
+```bash
+aws cloudformation delete-stack --stack-name staging-userdata
+aws cloudformation delete-stack --stack-name prod-userdata
+```
