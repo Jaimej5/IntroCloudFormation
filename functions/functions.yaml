@@ -1,0 +1,66 @@
+AWSTemplateFormatVersion: "2010-09-09"
+
+Parameters:
+  VPCIdParameter:
+    Type: String
+    #Default: vpc-0054d7c1b2cf913fb 
+  KeyPairParameter:
+    Type: String
+    #Default: demo-keys
+  AMIIdParameter:
+    Type: String
+    #Default: ami-0ae8f15ae66fe8cda
+  InstanceTypeParameter:
+    Description: Instance Type
+    Type: String
+    Default: t2.micro
+    AllowedValues:
+      - t2.micro
+      - t3.micro
+      - t3.small
+
+Outputs:
+  PublicIP: #Atribute of the instance ec2 cloudformation
+    Value: 
+      Fn::GetAtt: [Instance, PublicIp]
+  InstanceId:
+    Value: 
+      Ref: Instance
+  foo1:
+    Description: foo
+    Value: 
+      Fn::Base64: holamundo #funciones intrinsecas de cloudformation -> En este caso se codifica en base64 la cadena "holamundo" fn::base64
+
+Description: >
+  This stack will create
+  an instance and everything
+  necessary for it to work
+
+Resources:
+  Instance:
+    Type: AWS::EC2::Instance
+    Properties:
+      ImageId: 
+        Ref: AMIIdParameter
+      KeyName: 
+        Ref: KeyPairParameter
+      InstanceType: 
+        Ref: InstanceTypeParameter
+      SecurityGroupIds:
+        - Ref: SecurityGroupSSH
+  SecurityGroupSSH:
+     Type: AWS::EC2::SecurityGroup
+     Properties:
+       GroupDescription: "This is a security group for SSH"
+       SecurityGroupEgress: 
+         -   CidrIp: 0.0.0.0/0
+             FromPort: 22
+             IpProtocol: tcp
+             ToPort: 22
+       SecurityGroupIngress: 
+         -   CidrIp: 0.0.0.0/0
+             FromPort: 0 #Any port
+             IpProtocol: -1 #Any protocol
+             ToPort: 0
+       VpcId: 
+          Ref: VPCIdParameter
